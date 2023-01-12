@@ -3,7 +3,7 @@ const cors = require("cors");
 const colors = require("colors");
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
-const connectDB = require("./config/db"); 
+const connectDB = require("./config/db");
 const { errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -14,6 +14,7 @@ connectDB();
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/accounts", require("./routes/accountRoutes"));
+app.use("/api/transactions", require("./routes/transactionRoutes"));
 app.use("/api/users", require("./routes/usersRoutes"));
 
 app.use(errorHandler);
