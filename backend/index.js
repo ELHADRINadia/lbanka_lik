@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const colors = require("colors");
+const colors = require('colors'); 
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 const connectDB = require("./config/db"); 
@@ -12,9 +12,9 @@ app.use(express.json());
 
 connectDB();
 
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/accounts", require("./routes/accountRoutes"));
-app.use("/api/users", require("./routes/usersRoutes"));
+app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/account", require("./routes/accountRoute"));
+app.use("/api/users", require("./routes/usersRoute"));
 
 app.use(errorHandler);
 
