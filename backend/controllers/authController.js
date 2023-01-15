@@ -6,7 +6,7 @@ const asyncHandler = require("express-async-handler");
 //REGISTER new user
 const Register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  return res.status(200).json({ name, email, password });
+//   return res.status(200).json({ name, email, password });
 
   if (!name || !email || !password) {
     res.status(400);
@@ -71,6 +71,7 @@ const Login = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
       message: "You have successfully logged in",
     });
+    
   } else {
     res.status(400);
     throw new Error("Invalid credentials");
@@ -84,7 +85,8 @@ const GetUserById = asyncHandler(async (req, res) => {
 
 //Generate JWT token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  const key = "111IIIFOEFEPFEF"
+  return jwt.sign({ id }, key, {
     expiresIn: "23h",
   });
 };

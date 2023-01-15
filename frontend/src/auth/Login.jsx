@@ -1,43 +1,58 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import NavBar from '../components/NavBar';
-import axios from 'axios';
+import { useSelector, useDispatch } from "react-redux";
 import {useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-function LoginUser() {
-  const navigate = useNavigate();
-  const [formdata,setformdata] = useState({
-    email: '',
-    password: ''
+import { login, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
+import { FaSignInAlt } from "react-icons/fa";
+function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
   });
-  const { email, password} = formdata;
+  const { email, password } = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    if (isSuccess) {
+      toast.success(message);
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const onChange = (e) => {
-    setformdata((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }))
-  }
-  const Login = async (e)=>{
-    e.preventDefault()
+    }));
+  };
+
+  const Login = (e) => {
+    e.preventDefault();
+
     const userData = {
       email,
       password,
-    }
-    const res = await axios.post("http://localhost:9000/clients/login",userData);
-    if(res.data.message === 'password is not correct'){
-      const notify = () => toast("password is not correct!");
-      notify();
-    }else if(res.data.message === 'no email such that'){
-      const notify = () => toast("no email such that!");
-      notify();
-    }else{
-      let loggedin = JSON.stringify(res.data);
-      localStorage.setItem("user",loggedin);
-      navigate('/')
-      const notify = () => toast("your login is correct!");
-      notify();
-    }
-    
+    };
+    dispatch(login(userData));
+  };
+
+  if (isLoading) {
+    return <Spinner />;
   }
   return (
     <>
@@ -58,7 +73,7 @@ function LoginUser() {
         <form onSubmit={Login}>
           <div>
             <label class="mb-2.5 block font-extrabold" for="email">Email</label>
-            <input type="email" id="email" name='email' value={email} onChange={onChange} class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow placeholder:opacity-30" placeholder="mail@user.com" />
+            <input type="email" id="email" name='email' value={email} onChange={onChange} class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow placeholder:opacity-30" placeholder="nadia@gmail.com" />
           </div>
           <div class="mt-4">
             <label class="mb-2.5 block font-extrabold" for="password">Password</label>
@@ -85,4 +100,4 @@ function LoginUser() {
 
   );
 }
-export default LoginUser;
+export default Login;

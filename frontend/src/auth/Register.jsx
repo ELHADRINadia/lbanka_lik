@@ -1,48 +1,70 @@
 import React from 'react'
 import NavBar from '../components/NavBar';
-import {useState} from 'react';
-import axios from 'axios';
+import { useSelector, useDispatch } from "react-redux";
+import {useState, useEffect} from 'react';
+import { toast } from "react-toastify";
 import {useNavigate} from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { register, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 function Register() {
-  const navigate = useNavigate();
-  const [formdata,setformdata] = useState({
-    fullname : '',
-    email: '',
-    password: ''
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
   });
-  const {fullname, email, password} = formdata;
+  const { name, email, password, password2 } = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    if (isSuccess) {
+      toast.success(message);
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const onChange = (e) => {
-    setformdata((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }))
-  }
-  const register = async (e)=>{
-    e.preventDefault()
-    const userData = {
-      fullname,
-      email,
-      password,
-    }
-    if(userData.fullname =='' || userData.email =='' || userData.password ==''){
-      const notify = () => toast("please fill al the feilds!");
-      notify();
-    }else{
-      const res = await axios.post("http://localhost:9000/clients/register",userData);
-      let loggedin = JSON.stringify(res.data);
-      localStorage.setItem("user",loggedin);
-      navigate('/')
-      const notify = () => toast("your register is correct!");
-      notify();
-    }
-  }
+    }));
+  };
 
+  const Register = (e) => {
+    e.preventDefault();
+
+    if (password !== password2) {
+      toast.error("Passwords do not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+
+      dispatch(register(userData));
+    }
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <>
     <NavBar/>
-    <ToastContainer/>
  <div class="flex w-full">
   <div class="w-full bg-black lg:mt-16 sm:mt-12 md:mt-12">
     <div class="mx-auto flex h-full w-2/3 flex-col justify-center text-white xl:w-1/2">
@@ -55,10 +77,10 @@ function Register() {
         </fieldset>
       </div>
       <div class="mt-10">
-        <form onSubmit={register}>
+        <form onSubmit={Register}>
           <div>
             <label class="mb-2.5 block font-extrabold" for="fullname">fullname</label>
-            <input id="fullname" name='fullname' value={fullname} type="text" class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow placeholder:opacity-30"  onChange={onChange}/>
+            <input id="name" name='name' value={name} type="text" class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow placeholder:opacity-30"  onChange={onChange}/>
           </div>
           <div class="mt-4">
             <label class="mb-2.5 block font-extrabold" for="email">Email</label>
@@ -67,6 +89,10 @@ function Register() {
           <div class="mt-4">
             <label class="mb-2.5 block font-extrabold" for="password">Password</label>
             <input id="password" name='password' value={password} type="password" class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow" onChange={onChange}/>
+          </div>
+          <div class="mt-4">
+            <label class="mb-2.5 block font-extrabold" for="password2">Password</label>
+            <input id="password2" name='password2' value={password2} type="password2" class="inline-block w-full rounded bg-white p-2.5 leading-none text-black placeholder-indigo-900 shadow" onChange={onChange}/>
           </div>
           <div class="mt-4 flex w-full flex-col justify-between sm:flex-row">
             <div><input type="checkbox" id="remember" /><label for="remember" class="mx-2 text-sm">Remember me</label></div>
@@ -84,6 +110,7 @@ function Register() {
   </div>
 </div>
     </>
+    
 
   );
 }
