@@ -27,7 +27,7 @@ function Register() {
       toast.error(message);
     }
     if (isSuccess || user) {
-      navigate("/");
+      navigate("/dashboard");
     }
     if (isSuccess) {
       toast.success(message);

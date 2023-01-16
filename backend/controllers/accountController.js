@@ -22,7 +22,7 @@ const getAllAccounts = asyncHandler(async (req, res) => {
 // @desc Create a new account
 // @route POST /api/accounts/create-account
 // @access Private
-const setAccount = asyncHandler(async (req, res) => {
+const Create_account = asyncHandler(async (req, res) => {
   if (!req.body.name) {
     res.status(400);
     throw new Error("add a name");
@@ -103,7 +103,7 @@ const deleteAccount = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAccounts,
-  setAccount,
+  Create_account,
   updateAccount,
   deleteAccount,
   getAllAccounts,

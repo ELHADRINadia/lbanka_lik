@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "/api/accounts/";
+const API_URL = "http://localhost:5000/api/accounts/";
 
 // Create account
 const createAccount = async (accountData, token) => {
@@ -11,7 +11,7 @@ const createAccount = async (accountData, token) => {
   };
 
   const response = await axios.post(
-    API_URL + "create-account",
+    API_URL + "setAccount",
     accountData,
     config
   );
