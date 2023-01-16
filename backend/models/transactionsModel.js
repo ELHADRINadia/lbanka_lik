@@ -21,7 +21,7 @@ const transactionSchema = new mongoose.Schema(
     },
     transaction_type: {
       type: String,
-      enum: ["Retrait", "transfert"],
+      enum: ["Retrait", "transfer"],
       required: true,
     },
     transfer_from: {
