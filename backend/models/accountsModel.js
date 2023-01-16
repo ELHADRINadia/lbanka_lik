@@ -12,7 +12,7 @@ const accountSchema = new mongoose.Schema(
       required: [true, "Please enter yr name"],
     },
 
-    balance: {
+    solde: {
       type: Number,
       required: true,
     },
