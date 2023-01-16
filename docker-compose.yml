@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: frontend
+    container_name: frontend
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+  backend:
+    build: backend
+    container_name: backend
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017
